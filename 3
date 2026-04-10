@@ -1,0 +1,38 @@
+#include <stdio.h>  
+#include <string.h> 
+#include <stdlib.h> 
+int max(int a, int b) {
+    return (a > b) ? a : b;
+}
+
+
+int lengthOfLongestSubstring(char* s) {
+    if (s == NULL || *s == '\0') {
+        return 0; 
+    }
+
+    int n = strlen(s);
+    if (n == 0) {
+        return 0;
+    }
+
+    int char_map[128] = {0}; 
+
+    int left = 0;
+    int maxLength = 0;
+
+    for (int right = 0; right < n; right++) {
+        char current_char = s[right];
+
+        char_map[current_char]++;
+
+        while (char_map[current_char] > 1) {
+            char char_at_left = s[left];
+            char_map[char_at_left]--; 
+            left++;                  
+        }
+        maxLength = max(maxLength, right - left + 1);
+    }
+
+    return maxLength;
+}
