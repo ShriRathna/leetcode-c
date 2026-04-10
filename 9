@@ -1,0 +1,52 @@
+#include <stdlib.h>
+#include <string.h>
+
+// Standard telephone keypad mapping
+char* phone_map[] = {"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+
+void backtrack(char* digits, int index, char* current, char** result, int* returnSize) {
+    // Base Case: If the current path length equals digits length, save it
+    if (digits[index] == '\0') {
+        result[*returnSize] = (char*)malloc((index + 1) * sizeof(char));
+        strcpy(result[*returnSize], current);
+        (*returnSize)++;
+        return;
+    }
+
+    // Get the letters corresponding to the current digit
+    char* letters = phone_map[digits[index] - '0'];
+    for (int i = 0; letters[i] != '\0'; i++) {
+        current[index] = letters[i];
+        current[index + 1] = '\0'; // Ensure null-termination for strcpy
+        backtrack(digits, index + 1, current, result, returnSize);
+    }
+}
+
+/**
+ * Note: The returned array must be malloced, assume caller calls free().
+ */
+char** letterCombinations(char* digits, int* returnSize) {
+    int len = strlen(digits);
+    *returnSize = 0;
+    
+    // Edge Case: Empty input string
+    if (len == 0) return NULL;
+
+    // 1. Calculate total possible combinations to allocate memory
+    int total_combinations = 1;
+    for (int i = 0; i < len; i++) {
+        total_combinations *= strlen(phone_map[digits[i] - '0']);
+    }
+
+    // 2. Allocate the array of strings and a temporary buffer for backtracking
+    char** result = (char**)malloc(total_combinations * sizeof(char*));
+    char* current_path = (char*)malloc((len + 1) * sizeof(char));
+    
+    // 3. Start recursion
+    backtrack(digits, 0, current_path, result, returnSize);
+    
+    // Clean up temporary path buffer
+    free(current_path);
+    
+    return result;
+}
