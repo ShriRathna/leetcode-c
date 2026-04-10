@@ -1,0 +1,70 @@
+#include <stdio.h>
+#include <stdlib.h> 
+struct ListNode* addTwoNumbers(struct ListNode* l1, struct ListNode* l2) {
+    struct ListNode* dummyHead = (struct ListNode*)malloc(sizeof(struct ListNode));
+    dummyHead->val = 0;
+    dummyHead->next = NULL;
+    
+    struct ListNode* current = dummyHead; 
+    int carry = 0; 
+    while (l1 != NULL || l2 != NULL || carry != 0) {
+        int val1 = (l1 != NULL) ? l1->val : 0; 
+        int val2 = (l2 != NULL) ? l2->val : 0;
+
+        int sum = val1 + val2 + carry; 
+        carry = sum / 10;             
+        int digit = sum % 10;          
+
+        struct ListNode* newNode = (struct ListNode*)malloc(sizeof(struct ListNode));
+        newNode->val = digit;
+        newNode->next = NULL;
+
+        current->next = newNode;
+        current = current->next; 
+        if (l1 != NULL) {
+            l1 = l1->next;
+        }
+        if (l2 != NULL) {
+            l2 = l2->next;
+        }
+    }
+
+    struct ListNode* resultHead = dummyHead->next;
+    free(dummyHead); 
+    return resultHead;
+}
+
+struct ListNode* createList(int* arr, int size) {
+    if (size == 0) {
+        return NULL;
+    }
+    struct ListNode* head = (struct ListNode*)malloc(sizeof(struct ListNode));
+    head->val = arr[0];
+    head->next = NULL;
+    struct ListNode* current = head;
+    for (int i = 1; i < size; i++) {
+        current->next = (struct ListNode*)malloc(sizeof(struct ListNode));
+        current->next->val = arr[i];
+        current->next->next = NULL;
+        current = current->next;
+    }
+    return head;
+}
+
+void printList(struct ListNode* head) {
+    struct ListNode* current = head;
+    while (current != NULL) {
+        printf("%d -> ", current->val);
+        current = current->next;
+    }
+    printf("NULL\n");
+}
+
+void freeList(struct ListNode* head) {
+    struct ListNode* current = head;
+    while (current != NULL) {
+        struct ListNode* next = current->next;
+        free(current);
+        current = next;
+    }
+}
